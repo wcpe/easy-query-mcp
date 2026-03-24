@@ -1,0 +1,71 @@
+patterns:
+  null-guard-fix:
+    description: "Fix pattern: add null guard, required-field validation, or safer optional handling."
+    message_regexes:
+      - "null|npe|nullable|optional"
+      - "fix|guard|safe|validate"
+      - "空指针|判空|空安全"
+    file_hints:
+      - "\\.(kt|java)$"
+    related_cards:
+      - easyquery-transaction
+    suggested_actions:
+      - "Replace unsafe dereference with explicit validation or safe optional handling"
+      - "Validate required entity fields before persistence"
+
+  sql-syntax-fix:
+    description: "Fix pattern: adjust mapping, quoting, or generated SQL assumptions."
+    message_regexes:
+      - "sql|syntax|column|table|dialect"
+      - "fix|quote|mapping|generate"
+      - "SQL|语法|字段|表名|映射"
+    file_hints:
+      - "Entity|Repository|Mapper|Config|Dialect"
+    related_cards:
+      - h2-concurrency-testing
+    suggested_actions:
+      - "Inspect generated SQL and compare it with the target database dialect"
+      - "Rename or quote reserved-word columns and verify mapping metadata"
+
+  transaction-retry-fix:
+    description: "Fix pattern: add retry, backoff, or narrower transaction scope for concurrent writes."
+    message_regexes:
+      - "retry|lock|transaction|deadlock|concurrent|optimistic"
+      - "fix|backoff|scope|version"
+      - "重试|锁|事务|并发"
+    file_hints:
+      - "Repository|Service|Transaction|Dao"
+    related_cards:
+      - h2-concurrency-testing
+      - easyquery-transaction
+    suggested_actions:
+      - "Add bounded retry with backoff for optimistic locking conflicts"
+      - "Shrink transaction scope and separate read/write phases"
+
+  paging-fix:
+    description: "Fix pattern: correct count query, ordering, or page window construction."
+    message_regexes:
+      - "page|paging|pager|count|offset|limit"
+      - "fix|order|total|window"
+      - "分页|总数|偏移|排序"
+    file_hints:
+      - "Page|Pager|Repository|Query"
+    related_cards:
+      - h2-concurrency-testing
+    suggested_actions:
+      - "Verify count and page queries share the same filter conditions"
+      - "Ensure ordering is deterministic before pagination is applied"
+
+  code-first-schema-fix:
+    description: "Fix pattern: align CodeFirst schema generation with entity configuration."
+    message_regexes:
+      - "codefirst|migration|schema|ddl|table"
+      - "fix|align|column|type"
+      - "建表|迁移|字段类型|模式"
+    file_hints:
+      - "Entity|Configure|Migration|Schema"
+    related_cards:
+      - easyquery-transaction
+    suggested_actions:
+      - "Reconcile entity annotations/configuration with generated schema output"
+      - "Run schema bootstrap against a clean database and inspect the diff"

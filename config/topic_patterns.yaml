@@ -1,0 +1,183 @@
+# Topic patterns for EasyQuery knowledge mining.
+
+patterns:
+  entity-mapping:
+    category: mapping
+    confidence: 0.72
+    canonical_topic: entity-mapping
+    content_domains: [source, example, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [entity-mapping, table, column, entity-proxy]
+    aliases: ["entity mapping", "mapping", "实体映射"]
+    keywords:
+      - "@Table"
+      - "@Column"
+      - "@EntityProxy"
+      - "EntityConfigure"
+      - "TableAvailable"
+
+  queryable-api:
+    category: query
+    confidence: 0.75
+    canonical_topic: queryable-api
+    content_domains: [api, example, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [queryable, where, select, join, group-by, order-by]
+    aliases: ["query api", "queryable", "查询构造"]
+    keywords:
+      - "queryable"
+      - "where\\("
+      - "select\\("
+      - "leftJoin\\("
+      - "groupBy\\("
+      - "orderBy\\("
+
+  repository-pattern:
+    category: architecture
+    confidence: 0.68
+    canonical_topic: repository-pattern
+    content_domains: [source, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [repository, query-repository, jdbc-repository, easy-entity-query]
+    aliases: ["repository pattern", "repository", "仓储模式"]
+    keywords:
+      - "Repository"
+      - "QueryRepository"
+      - "JdbcRepository"
+      - "EasyEntityQuery"
+
+  transaction-boundary:
+    category: transaction
+    confidence: 0.74
+    canonical_topic: transaction
+    content_domains: [source, example, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [transaction, rollback, commit, transactional]
+    aliases: ["transaction", "事务", "事务边界"]
+    keywords:
+      - "transaction"
+      - "beginTransaction"
+      - "commit"
+      - "rollback"
+      - "Transactional"
+
+  paging-query:
+    category: paging
+    confidence: 0.7
+    canonical_topic: pagination
+    content_domains: [api, example, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [pagination, paging, page-result, page-size]
+    aliases: ["pagination", "paging", "分页"]
+    keywords:
+      - "toPageResult"
+      - "PageResult"
+      - "Pager"
+      - "pageResult"
+      - "pageIndex"
+      - "pagination"
+      - "paging"
+
+  code-first:
+    category: schema
+    confidence: 0.7
+    canonical_topic: code-first
+    content_domains: [source, migration, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [code-first, migration, schema, ddl, auto-migrate]
+    aliases: ["code first", "CodeFirst", "代码优先"]
+    keywords:
+      - "CodeFirst"
+      - "autoMigrate"
+      - "Migration"
+      - "schema"
+      - "DDL"
+
+  logic-delete:
+    category: mapping
+    confidence: 0.68
+    canonical_topic: logic-delete
+    content_domains: [source, example, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [logic-delete, soft-delete, deleted, is-deleted]
+    aliases: ["logic delete", "soft delete", "逻辑删除"]
+    keywords:
+      - "logicDelete"
+      - "LogicDelete"
+      - "logic delete"
+      - "soft delete"
+      - "deleted"
+      - "isDeleted"
+
+  value-converter:
+    category: mapping
+    confidence: 0.66
+    canonical_topic: value-converter
+    content_domains: [source, example, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [value-converter, property-converter, json-column]
+    aliases: ["value converter", "property converter", "值转换器"]
+    keywords:
+      - "ValueConverter"
+      - "PropertyConverter"
+      - "JSONColumn"
+      - "serialize"
+      - "deserialize"
+
+  sharding-routing:
+    category: sharding
+    confidence: 0.7
+    canonical_topic: sharding
+    content_domains: [source, migration, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [sharding, table-route, data-source-route, partition]
+    aliases: ["sharding", "分片", "分库分表"]
+    keywords:
+      - "Sharding"
+      - "TableRoute"
+      - "DataSourceRoute"
+      - "route"
+      - "partition"
+
+  dynamic-condition:
+    category: query
+    confidence: 0.72
+    canonical_topic: dynamic-condition
+    content_domains: [api, example, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [dynamic-condition, conditional-filter, predicate, where-if]
+    aliases: ["dynamic where", "dynamic condition", "动态条件", "动态查询"]
+    keywords:
+      - "dynamic condition"
+      - "whereIf"
+      - "filterIf"
+      - "dynamic[ -]?condition"
+      - "predicate"
+      - "conditional query"
+      - "动态条件"
+
+  h2-concurrency-testing:
+    category: testing
+    confidence: 0.7
+    canonical_topic: test-fixture
+    content_domains: [test, example, doc, knowledge]
+    visibility: public
+    stability: stable
+    feature_tags: [h2, concurrency-test, transaction-test, in-memory]
+    aliases: ["h2 test", "concurrency test", "h2 concurrency", "事务测试"]
+    keywords:
+      - "H2"
+      - "DB_CLOSE_DELAY"
+      - "in.?memory.*database"
+      - "concurrent.*test"
+      - "transaction.*test"

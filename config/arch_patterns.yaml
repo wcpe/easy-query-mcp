@@ -1,0 +1,101 @@
+# Architecture patterns for EasyQuery-oriented projects.
+
+patterns:
+  service-layer:
+    category: architecture
+    confidence: 0.7
+    description: "Service layer pattern separating business orchestration from persistence details"
+    keywords:
+      - "Service"
+      - "class.*Service"
+      - "interface.*Service"
+    indicators:
+      - "Repository"
+      - "queryable"
+      - "transaction"
+
+  repository-pattern:
+    category: architecture
+    confidence: 0.74
+    description: "Repository abstraction around EasyQuery or persistence operations"
+    keywords:
+      - "Repository"
+      - "QueryRepository"
+      - "EasyEntityQuery"
+      - "DbContext"
+    indicators:
+      - "find"
+      - "save"
+      - "insert"
+      - "update"
+      - "delete"
+
+  entity-configuration:
+    category: architecture
+    confidence: 0.7
+    description: "Dedicated entity mapping and table metadata configuration"
+    keywords:
+      - "@Table"
+      - "@Column"
+      - "EntityConfigure"
+      - "TableAvailable"
+    indicators:
+      - "configure"
+      - "column"
+      - "primaryKey"
+
+  query-builder-flow:
+    category: architecture
+    confidence: 0.73
+    description: "Fluent query-builder chains composed with filters, joins, projections, or sorting"
+    keywords:
+      - "queryable"
+      - "where\\("
+      - "select\\("
+      - "leftJoin\\("
+      - "groupBy\\("
+    indicators:
+      - "orderBy\\("
+      - "toList\\("
+      - "toPageResult\\("
+
+  transaction-boundary:
+    category: architecture
+    confidence: 0.74
+    description: "Explicit transaction demarcation around multi-step persistence work"
+    keywords:
+      - "transaction"
+      - "beginTransaction"
+      - "commit"
+      - "rollback"
+      - "Transactional"
+    indicators:
+      - "try"
+      - "commit"
+      - "rollback"
+
+  api-impl-separation:
+    category: architecture
+    confidence: 0.68
+    description: "API and implementation separation between query contracts and concrete persistence logic"
+    keywords:
+      - "interface.*Api"
+      - "interface.*Repository"
+      - "class.*Impl"
+    indicators:
+      - "override"
+      - "implements"
+
+  code-first-bootstrap:
+    category: architecture
+    confidence: 0.68
+    description: "Startup or bootstrap flow that initializes schema or migration state"
+    keywords:
+      - "CodeFirst"
+      - "Migration"
+      - "autoMigrate"
+      - "schema"
+    indicators:
+      - "init"
+      - "bootstrap"
+      - "createTable"

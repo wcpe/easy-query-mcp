@@ -1,0 +1,81 @@
+aliases:
+  orm:
+    - easyquery
+    - easy-query
+    - orm
+    - repository
+    - entity
+    - persistence
+  query:
+    - 查询
+    - where
+    - whereobject
+    - dynamic where
+    - queryable
+  entity mapping:
+    - 实体映射
+    - column
+    - table
+    - entity mapping
+    - proxy
+    - entityproxy
+  code first:
+    - code first
+    - code-first
+    - migrate
+    - migration
+    - schema
+  repository:
+    - repository
+    - repo
+    - 持久层
+    - 仓储
+  transaction:
+    - transaction
+    - 事务
+    - rollback
+    - commit
+    - optimistic lock
+    - for update
+  join:
+    - join
+    - 联表
+    - include
+    - selectautoinclude
+    - subquerytogroupjoin
+  page:
+    - page
+    - 分页
+    - deep page
+    - limit
+    - offset
+  batch:
+    - batch
+    - 批量
+    - batch insert
+    - batch update
+  upsert:
+    - upsert
+    - insertorupdate
+    - onconflictthen
+    - conflict then
+  logic delete:
+    - logic delete
+    - 逻辑删除
+    - disablelogicdelete
+    - allowdeletestatement
+  interceptor:
+    - interceptor
+    - 拦截器
+    - tenant
+    - auto fill
+  value object:
+    - value object
+    - 值对象
+    - embedded
+  sharding:
+    - sharding
+    - 分片
+    - datasource shard
+    - table shard
+

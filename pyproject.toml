@@ -1,0 +1,34 @@
+[project]
+name = "easy-query-mcp"
+version = "0.1.0"
+description = "EasyQuery-focused MCP server"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=1.26.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+easy-query-mcp = "easy_query_mcp:main"
+easy-query-mcp-server = "easy_query_mcp.server:main"
+easy-query-mcp-index = "easy_query_mcp.cli:main"
+easy-query-mcp-sync-sources = "easy_query_mcp.source_manager:main_sync"
+easy-query-mcp-knowledge-mine = "easy_query_mcp.cli_knowledge:main_mine"
+easy-query-mcp-knowledge-publish = "easy_query_mcp.cli_knowledge:main_publish"
+easy-query-mcp-eval = "easy_query_mcp.evaluation:main"
+easy-query-mcp-dashboard = "easy_query_mcp.knowledge_dashboard:main"
+easy-query-mcp-drift-audit = "easy_query_mcp.drift_audit:main"
+easy-query-mcp-architecture-drift = "easy_query_mcp.architecture_drift:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/easy_query_mcp"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]

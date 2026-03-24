@@ -1,0 +1,103 @@
+patterns:
+  raw-sql-bypass:
+    category: anti-pattern
+    confidence: 0.82
+    description: "Raw SQL bypasses EasyQuery abstractions in codebases expected to stay on the ORM path."
+    proximity: 25
+    keywords:
+      - "EasyEntityQuery"
+      - "queryable"
+      - "Repository"
+      - "DbContext"
+    indicators:
+      - "SELECT "
+      - "INSERT "
+      - "UPDATE "
+      - "DELETE "
+      - "createNativeQuery"
+    exclusions:
+      - "test"
+      - "migration"
+    avoid:
+      - "Prefer EasyQuery query builders and typed repositories over inline SQL for routine business paths."
+    recommended_cards:
+      - arch-repository-pattern
+
+  oversized-service-transaction:
+    category: anti-pattern
+    confidence: 0.76
+    description: "Service method mixes validation, orchestration, and heavy persistence work inside one long transaction block."
+    proximity: 20
+    keywords:
+      - "Service"
+      - "transaction"
+      - "Transactional"
+    indicators:
+      - "for \\("
+      - "while \\("
+      - "queryable"
+      - "insert"
+      - "update"
+    avoid:
+      - "Keep transaction scopes tight and separate read orchestration from write-heavy loops."
+    recommended_cards:
+      - arch-transaction-boundary
+      - arch-service-layer
+
+  entity-leaks-transport-shape:
+    category: anti-pattern
+    confidence: 0.74
+    description: "Persistence entities are reused as API DTOs, coupling storage schema to transport contracts."
+    proximity: 18
+    keywords:
+      - "@Table"
+      - "@Column"
+      - "Entity"
+    indicators:
+      - "@RequestBody"
+      - "@RestController"
+      - "Controller"
+      - "Response"
+    avoid:
+      - "Map entities to dedicated DTO or VO types at service or adapter boundaries."
+    recommended_cards:
+      - arch-api-impl-separation
+
+  fragile-logic-delete:
+    category: anti-pattern
+    confidence: 0.72
+    description: "Logical delete fields are handled manually and inconsistently across query and write paths."
+    proximity: 24
+    keywords:
+      - "deleted"
+      - "isDeleted"
+      - "logicDelete"
+      - "LogicDelete"
+    indicators:
+      - "where\\("
+      - "update\\("
+      - "setColumns"
+    avoid:
+      - "Centralize logical delete conventions in entity mapping and shared query helpers."
+    recommended_cards:
+      - easyquery-transaction
+
+  test-only-h2-assumption:
+    category: anti-pattern
+    confidence: 0.7
+    description: "Queries or schema assumptions are validated only against H2 and may drift from the production dialect."
+    proximity: 22
+    keywords:
+      - "H2"
+      - "JdbcSQL"
+      - "DB_CLOSE_DELAY"
+      - "mem:test"
+    indicators:
+      - "syntax"
+      - "reserved"
+      - "dialect"
+      - "mysql"
+    avoid:
+      - "Use H2 for fast feedback, but verify dialect-sensitive SQL and mappings against the target database."
+    recommended_cards:
+      - h2-concurrency-testing

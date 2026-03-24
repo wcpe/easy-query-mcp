@@ -1,0 +1,39 @@
+db_path: "../index_easyquery.db"
+
+skip_dirs:
+  - build
+  - out
+  - .gradle
+  - .git
+  - target
+  - node_modules
+  - .idea
+  - .vscode
+  - __pycache__
+  - bin
+  - obj
+  - .settings
+  - .metadata
+
+sources:
+  - id: easyquery
+    type: code
+    name: EasyQuery
+    path: "../sources/easy-query"
+    git_url: "https://github.com/dromara/easy-query"
+    tags: [framework, orm, database, sql, entity, repository, query, join, page, batch, transaction]
+
+  - id: easyquery-docs
+    type: docs
+    name: EasyQuery Docs
+    path: "../sources/easy-query-doc"
+    git_url: "https://github.com/xuejmnet/easy-query-doc"
+    linked_source_id: "easyquery"
+    tags: [docs, official, easyquery, orm, code-first, value-object, logic-delete, interceptor, sharding, page, batch]
+
+  - id: knowledge-easyquery
+    type: knowledge
+    name: EasyQuery Knowledge Cards
+    path: "../knowledge_cards"
+    linked_source_id: "easyquery"
+    tags: [knowledge, easyquery, orm, transaction, testing]

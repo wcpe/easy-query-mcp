@@ -1,0 +1,101 @@
+# Error patterns for EasyQuery-focused troubleshooting.
+
+patterns:
+  classnotfound:
+    regex: "ClassNotFoundException|NoClassDefFoundError|ClassNotFoundException.*easyquery|NoClassDefFoundError.*easyquery"
+    category: troubleshooting
+    severity: high
+    probable_causes:
+      - "EasyQuery runtime or extension module is missing from the classpath"
+      - "Shading or packaging omitted transitive ORM dependencies"
+      - "Version mismatch between easy-query core and extension artifacts"
+    related_symbols:
+      - EasyEntityQuery
+      - QueryRuntimeContext
+    suggested_checks:
+      - "Verify all easy-query modules required by your project are packaged together"
+      - "Align easy-query artifact versions across core and extension modules"
+      - "Inspect the built JAR or dependency tree to confirm the missing class is present"
+
+  sql-syntax:
+    regex: "SQLSyntaxErrorException|JdbcSQLSyntaxErrorException|SQL.*syntax.*error|You have an error in your SQL syntax"
+    category: troubleshooting
+    severity: medium
+    probable_causes:
+      - "Entity mapping or field metadata generated incompatible SQL"
+      - "Column or table name collides with a reserved keyword"
+      - "H2 and the target production dialect behave differently"
+    related_cards:
+      - h2-concurrency-testing
+    suggested_checks:
+      - "Inspect the generated SQL and compare it with the target database dialect"
+      - "Quote or rename reserved-word identifiers"
+      - "Run the same query against the production-like database engine"
+
+  transaction-conflict:
+    regex: "optimistic.*lock|retry.*exhaust|StaleObjectStateException|deadlock|Lock wait timeout|ConcurrentModificationException.*(?:entity|row|record)"
+    category: troubleshooting
+    severity: high
+    probable_causes:
+      - "Concurrent updates hit the same row without adequate locking strategy"
+      - "Optimistic lock retries are exhausted under contention"
+      - "Transaction scope is broader than necessary"
+    related_cards:
+      - easyquery-transaction
+      - h2-concurrency-testing
+    related_symbols:
+      - transaction
+      - commit
+      - rollback
+    suggested_checks:
+      - "Confirm version or optimistic-lock fields are configured correctly"
+      - "Add bounded retry and backoff for conflicting writes"
+      - "Reduce transaction scope to the smallest write-critical section"
+
+  h2-connection:
+    regex: "H2.*(?:connection|closed|timeout)|JdbcSQLNonTransientConnectionException|Database may be already in use"
+    category: troubleshooting
+    severity: medium
+    probable_causes:
+      - "H2 in-memory database closed between tests"
+      - "Multiple test workers or processes compete for the same file DB"
+      - "Connection pool or lifecycle cleanup is misconfigured"
+    related_cards:
+      - h2-concurrency-testing
+    suggested_checks:
+      - "Keep DB_CLOSE_DELAY=-1 for in-memory tests that span multiple connections"
+      - "Use isolated database names or files per test run"
+      - "Verify the connection pool closes and recreates connections cleanly"
+
+  mapping-mismatch:
+    regex: "column.*not found|Unknown column|Invalid column name|Table.*doesn't exist|invalid.*table.*name"
+    category: troubleshooting
+    severity: high
+    probable_causes:
+      - "Entity mapping does not match the live schema"
+      - "CodeFirst migration was skipped or only partially applied"
+      - "Naming strategy or schema prefix differs between environments"
+    related_symbols:
+      - "@Table"
+      - "@Column"
+      - "EntityConfigure"
+    suggested_checks:
+      - "Compare entity annotations/configuration with the actual database schema"
+      - "Run migrations or CodeFirst bootstrap against the target schema"
+      - "Check schema, catalog, and naming-strategy settings across environments"
+
+  paging-count:
+    regex: "page.*count.*mismatch|PageResult.*total|offset.*out of range|limit.*must"
+    category: troubleshooting
+    severity: medium
+    probable_causes:
+      - "Count query and data query use different filter conditions"
+      - "Pagination is applied before a stable order is defined"
+      - "Caller provided invalid page or size parameters"
+    related_symbols:
+      - PageResult
+      - toPageResult
+    suggested_checks:
+      - "Verify count and page queries share identical predicates"
+      - "Apply deterministic ordering before pagination"
+      - "Validate page index and page size before building the query"
