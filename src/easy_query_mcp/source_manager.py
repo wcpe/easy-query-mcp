@@ -135,9 +135,11 @@ class SourceManager:
             if not item.git_url:
                 continue
             results.append(self.sync_source(item.id))
+        failed = [item for item in results if item.get("status") == "error"]
         return {
-            "status": "ok",
+            "status": "error" if failed else "ok",
             "count": len(results),
+            "failed": len(failed),
             "results": results,
         }
 
@@ -184,5 +186,7 @@ def main_sync() -> None:
         else:
             payload = manager.sync_all_sources(source_type=args.type)
         print(json.dumps(payload, ensure_ascii=False, indent=2))
+        if payload.get("status") == "error":
+            raise SystemExit(1)
     finally:
         db.close()

@@ -1,0 +1,133 @@
+name: MCP Smoke
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      UV_CACHE_DIR: ${{ github.workspace }}\.uv-cache
+      EASY_QUERY_MCP_HOME: ${{ github.workspace }}
+      EASY_QUERY_MCP_CONFIG: ${{ github.workspace }}\config\sources.yaml
+      EASY_QUERY_MCP_DB: ${{ github.workspace }}\index_easyquery.db
+      PYTHONUTF8: "1"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Sync dependencies
+        shell: pwsh
+        run: uv sync --dev
+
+      - name: Sync git-backed sources
+        shell: pwsh
+        run: cmd /c sync_sources.bat
+
+      - name: Rebuild full index
+        shell: pwsh
+        run: cmd /c reindex.bat
+
+      - name: Rebuild changed-only index
+        shell: pwsh
+        run: cmd /c reindex_changed.bat
+
+      - name: Run index smoke checks
+        shell: pwsh
+        run: uv run python .github/scripts/ci_smoke.py --config config/sources.yaml --db index_easyquery.db
+
+      - name: Start MCP server and verify health
+        id: server
+        shell: pwsh
+        run: |
+          $stdout = Join-Path $env:GITHUB_WORKSPACE 'server.stdout.log'
+          $stderr = Join-Path $env:GITHUB_WORKSPACE 'server.stderr.log'
+          $proc = Start-Process -FilePath "uv" `
+            -ArgumentList @(
+              "run",
+              "easy-query-mcp-server",
+              "--config",
+              "config/sources.yaml",
+              "--streamable-http",
+              "--host",
+              "127.0.0.1",
+              "--port",
+              "8090"
+            ) `
+            -WorkingDirectory $env:GITHUB_WORKSPACE `
+            -RedirectStandardOutput $stdout `
+            -RedirectStandardError $stderr `
+            -PassThru
+
+          "SERVER_PID=$($proc.Id)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+          $healthy = $false
+          for ($i = 0; $i -lt 30; $i++) {
+            Start-Sleep -Seconds 2
+            try {
+              $response = Invoke-WebRequest -Uri "http://127.0.0.1:8090/health" -UseBasicParsing
+              if ($response.StatusCode -eq 200) {
+                $payload = $response.Content | ConvertFrom-Json
+                if ($payload.status -eq "ok") {
+                  $healthy = $true
+                  break
+                }
+              }
+            } catch {
+            }
+
+            if ($proc.HasExited) {
+              break
+            }
+          }
+
+          if (-not $healthy) {
+            if (-not $proc.HasExited) {
+              Stop-Process -Id $proc.Id -Force
+            }
+            Write-Host "MCP server stdout:"
+            if (Test-Path $stdout) {
+              Get-Content $stdout
+            }
+            Write-Host "MCP server stderr:"
+            if (Test-Path $stderr) {
+              Get-Content $stderr
+            }
+            throw "MCP server failed to become healthy on http://127.0.0.1:8090/health"
+          }
+
+          $mcpResponse = Invoke-WebRequest -Uri "http://127.0.0.1:8090/mcp" -UseBasicParsing -Method POST -Body "{}" -ContentType "application/json" -SkipHttpErrorCheck
+          if ($mcpResponse.StatusCode -lt 200 -or $mcpResponse.StatusCode -ge 500) {
+            throw "Unexpected /mcp response status: $($mcpResponse.StatusCode)"
+          }
+
+      - name: Stop MCP server
+        if: always() && env.SERVER_PID != ''
+        shell: pwsh
+        run: |
+          $pid = [int]$env:SERVER_PID
+          $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+          if ($null -ne $process) {
+            Stop-Process -Id $pid -Force
+          }
+
+      - name: Upload smoke logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-smoke-logs
+          path: |
+            ${{ github.workspace }}\server.stdout.log
+            ${{ github.workspace }}\server.stderr.log
