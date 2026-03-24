@@ -30,7 +30,7 @@ jobs:
 
       - name: Sync dependencies
         shell: pwsh
-        run: uv sync --dev
+        run: uv sync --dev --locked
 
       - name: Sync git-backed sources
         shell: pwsh
@@ -114,13 +114,16 @@ jobs:
           }
 
       - name: Stop MCP server
-        if: always() && env.SERVER_PID != ''
+        if: always()
         shell: pwsh
         run: |
-          $pid = [int]$env:SERVER_PID
-          $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+          if ([string]::IsNullOrWhiteSpace($env:SERVER_PID)) {
+            exit 0
+          }
+          $serverProcessId = [int]$env:SERVER_PID
+          $process = Get-Process -Id $serverProcessId -ErrorAction SilentlyContinue
           if ($null -ne $process) {
-            Stop-Process -Id $pid -Force
+            Stop-Process -Id $serverProcessId -Force
           }
 
       - name: Upload smoke logs
