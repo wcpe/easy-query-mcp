@@ -125,12 +125,3 @@ jobs:
           if ($null -ne $process) {
             Stop-Process -Id $serverProcessId -Force
           }
-
-      - name: Upload smoke logs
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: mcp-smoke-logs
-          path: |
-            ${{ github.workspace }}\server.stdout.log
-            ${{ github.workspace }}\server.stderr.log
